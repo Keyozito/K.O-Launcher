@@ -6,6 +6,7 @@ import shutil
 import time
 
 def menu():
+    os.system("cls")
     logo = r"""
                                          ,--,                                                                                 
            ,--.     ,----..           ,---.'|                                                                                 
@@ -90,7 +91,6 @@ def patch_edit(fp, p):
             l = patchnote.readline()
             # Split so it can edit old files
             ls = l.split(" ")
-            lsp = f"{p}/{ls[1]}"
 
             if l == "==============\n":
                 count += 1
@@ -99,6 +99,8 @@ def patch_edit(fp, p):
             appl = ["Delete"]
 
             if ls[0] in appl:
+                lsp = f"{p}/{ls[1]}"
+
                 ls[1] = ls[1].replace('&', ' ')
                 ls[1] = ls[1].replace('\n', '')
 
@@ -122,7 +124,7 @@ def update(version):
     u = getpass.getuser()
 
     def confirm_path():
-        p = f"C:/Users/{u}/AppData/Roaming/.minecraft/versions/Keio da CockerT"
+        p = f"C:/Users/{u}/AppData/Roaming/.minecraft/versions/Keio da Cocker"
 
         confirm = "n"
         while confirm != "y":
@@ -139,5 +141,7 @@ def update(version):
     zip_create(fp,f, r)
     patch_edit(fp, p)
     zip_extract(fp, p)
+
+    print("\nModpack ready to go!")
 
 menu()
