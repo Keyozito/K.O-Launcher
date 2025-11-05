@@ -1,4 +1,9 @@
-import requests, getpass, zipfile, os, shutil, time
+import requests
+import getpass
+import zipfile
+import os
+import shutil
+import time
 
 def menu():
     logo = r"""
