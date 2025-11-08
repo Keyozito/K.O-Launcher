@@ -1,6 +1,6 @@
 <img width="100%" height="auto" alt="image" src="https://github.com/user-attachments/assets/283d4fcc-58d3-4b33-8612-ec8a5a15471b" />
 
-# ![Static Badge](https://img.shields.io/badge/Version%3A-1.0-purple)
+# ![Static Badge](https://img.shields.io/badge/Version%3A-1.1.3-purple)
 
 **K.O Launcher** is a python program made by me to help *[Keio da Cocker](https://github.com/Keyozito/Keio-da-Cocker)* players to update their modpacks. Before K.O Launcher all updates were done manually, so i decide to make a *Terminal Based* updater/installer!
 Here you can automatically update you already existing game, the path will be asked at some point so no worries about your minecraft breaking!
