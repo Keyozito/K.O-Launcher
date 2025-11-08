@@ -39,7 +39,7 @@ def menu():
     ;   |,'   \  ; |`---`                      |  ,     .-./ `--`----'   '---'        \   \  / `--''       \   \  /           
     '---'      `--"                             `--`---'                               `----'               `----'           
 
-    K.O Launcher - V1.0
+    K.O Launcher - V1.1.3
     """
     for line in logo.split("\n"):
         print(Fore.LIGHTMAGENTA_EX + line)
@@ -115,7 +115,7 @@ def get_version():
             os.system("pause")
             menu()
         else:
-            update(av[av.index(cv) - 1], p)
+            update(av[av.index(cv) - 1], p, av)
     else:
         pcolor(4, "No Version found, try manually updating your game, aborting.")
         os.system("pause")
@@ -132,6 +132,8 @@ def zip_create(fp, f, r):
             update_file.write(c)
             bar.update(len(c))
 
+    bar.close()
+    tqdm._instances.clear()
     pcolor(2, f"{f} created\n")
 def zip_extract(fp, p):
     pcolor(3, "Extracting Zip file")
@@ -161,12 +163,12 @@ def patch_edit(fp, p):
             appl = ["Delete", "Activate"]
 
             if ls[0] in appl:
-                # Path + Filename
-                lsp = f"{p}/{ls[1]}"
-
                 # Remove spaces and line end
                 ls[1] = ls[1].replace('&', ' ')
                 ls[1] = ls[1].replace('\n', '')
+
+                # Path + Filename
+                lsp = f"{p}/{ls[1]}"
 
                 try:
                     # Delete
@@ -203,7 +205,15 @@ def patch_edit(fp, p):
                 except Exception as E:
                     pcolor(4, f"Couldn't {ls[0]} {ls[1]} - {E}")
 
-def update(version, p):
+def check_chain(new_current, tags, p):
+    if new_current != tags[0]:
+        next_v = tags[tags.index(new_current) - 1]
+        pcolor(2, f"New version detected - {next_v}")
+
+        check_input = input("Would you like to update again? (y/n)")
+        if check_input == "y":
+            update(next_v, p, tags)
+def update(version, p, tags):
     file_zip = f"Update.{version}.zip"
     url = f"https://github.com/Keyozito/Keio-da-Cocker/releases/download/{version}/{file_zip}"
 
@@ -215,6 +225,7 @@ def update(version, p):
     zip_create(file_path, file_zip, r)
     patch_edit(file_path, p)
     zip_extract(file_path, p)
+    check_chain(version, tags, p)
 
     pcolor(2, "Modpack ready to go!")
     os.system("pause")
