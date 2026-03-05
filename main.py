@@ -1,5 +1,6 @@
 import requests
 import ctypes
+import pyautogui
 from tqdm import tqdm
 from colorama import init, Fore, Style
 import getpass
@@ -18,6 +19,13 @@ def calladm():
 calladm()
 
 def menu():
+    # Functions to print inside menu
+    menu_l = ["Auto Shop", "Update"]
+    menu_f = {
+        "0" : auto_shop,
+        "1" : get_version
+    }
+
     os.system("mode con cols=130 lines=30")
     os.system("cls")
     init()
@@ -39,26 +47,39 @@ def menu():
     ;   |,'   \  ; |`---`                      |  ,     .-./ `--`----'   '---'        \   \  / `--''       \   \  /           
     '---'      `--"                             `--`---'                               `----'               `----'           
 
-    K.O Launcher - V1.1.3
+    K.O Launcher - V1.2.5
     """
     for line in logo.split("\n"):
         print(Fore.LIGHTMAGENTA_EX + line)
         time.sleep(.1)
 
     time.sleep(1)
-    get_version()
 
-def pcolor(c, t):
+    # Select Function
+    for n, f in enumerate(menu_l):
+        pcolor(2,f,n)
+    menu_input = input()
+
+    try:
+        # Call the function based on input
+        menu_f[menu_input]()
+    except KeyError:
+        # Wrong choice safe
+        pcolor(4, "Selection Error")
+        time.sleep(3)
+        menu()
+
+def pcolor(c, t, m="-"):
     # Red = 1, Green = 2, Yellow = 3, Full red = 4
 
     if c == 1:
-        print(Fore.LIGHTRED_EX + "[-]" + Fore.WHITE + t)
+        print(Fore.LIGHTRED_EX + f"[{m}]" + Fore.WHITE + t)
     elif c == 2:
-        print(Fore.LIGHTGREEN_EX + "[-]" + Fore.WHITE + t)
+        print(Fore.LIGHTGREEN_EX + f"[{m}]" + Fore.WHITE + t)
     elif c == 3:
-        print(Fore.LIGHTYELLOW_EX + "[-]" + Fore.WHITE + t)
+        print(Fore.LIGHTYELLOW_EX + f"[{m}]" + Fore.WHITE + t)
     elif c == 4:
-        print(Fore.LIGHTRED_EX + "[-]" + t + Fore.WHITE)
+        print(Fore.LIGHTRED_EX + f"[{m}]" + t + Fore.WHITE)
 def confirm_path():
     u = getpass.getuser()
     path = f"C:/Users/{u}/AppData/Roaming/.minecraft/versions/Keio da Cocker"
@@ -73,6 +94,72 @@ def confirm_path():
             path = path.replace("\\", "/")
 
     return path
+
+def auto_shop():
+    def values():
+        pcolor(3, "How many inputs there is in the item page:")
+        as_input = int(input("Input: "))
+
+        pcolor(3, "How many outputs there is in the item page:")
+        as_output = int(input("Output: "))
+
+        pcolor(3, "How many time would you like to sell/buy this item:")
+        as_time = int(input("Times: "))
+
+        pcolor(3, f"Please confirm: Input({as_input}); Output({as_output}); Times({as_time})")
+        as_confirm = input("Is this correct? (y/n)")
+
+        if as_confirm != "y":
+            values()
+        else:
+            mouse(as_input, as_output, as_time)
+    def mouse(i, o, t):
+        pcolor(3, "Position your mouse inside the first input option, inside the game shop:")
+        input("Press enter: (5 Seconds Delay)")
+        time.sleep(5)
+        as_minput = pyautogui.position()
+        pcolor(3, f"Position defined as {as_minput}")
+
+        pcolor(3, "Position your mouse inside the first output option, inside the game shop:")
+        input("Press enter: (5 Seconds Delay)")
+        time.sleep(5)
+        as_moutput = pyautogui.position()
+        pcolor(3, f"Position defined as {as_moutput}")
+
+        pcolor(3, "To start AutoShop press enter: (5 Seconds Delay)")
+        input()
+        time.sleep(5)
+
+        # Coordinates
+        as_Y = as_minput[1]
+        as_inputX = as_minput[0]
+        as_outputX = as_moutput[0]
+        as_bc = [as_outputX, as_Y+60]
+
+        pcolor(2, "AutoShop start!")
+        for times in range(t):
+            print(f"Progress: {100*(times+1)/t}%", end='\r')
+
+            #Input
+            for inputs in range(i):
+                pyautogui.moveTo(as_inputX+ 45*inputs, as_Y)
+                time.sleep(.05)
+                pyautogui.click()
+
+                pyautogui.moveTo(as_bc[0], as_bc[1])
+                time.sleep(.05)
+                pyautogui.click()
+                time.sleep(.05)
+            #Output
+            for outputs in range(o):
+                pyautogui.moveTo(as_outputX+ 45*outputs, as_Y)
+                time.sleep(.05)
+                pyautogui.click()
+                time.sleep(.05)
+        print()
+        pcolor(2, "AutoShop Completed!")
+        os.system("pause")
+    values()
 
 def connection(url):
     r = requests.get(url, stream=True)
